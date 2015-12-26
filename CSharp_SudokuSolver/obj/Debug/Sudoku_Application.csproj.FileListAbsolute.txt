@@ -1,0 +1,9 @@
+C:\_Data\CSharp_SudokuSolver\CSharp_SudokuSolver\bin\Debug\CSharp_SudokuSolver.exe.config
+C:\_Data\CSharp_SudokuSolver\CSharp_SudokuSolver\bin\Debug\CSharp_SudokuSolver.exe
+C:\_Data\CSharp_SudokuSolver\CSharp_SudokuSolver\bin\Debug\CSharp_SudokuSolver.pdb
+C:\_Data\CSharp_SudokuSolver\CSharp_SudokuSolver\obj\Debug\Sudoku_Application.csprojResolveAssemblyReference.cache
+C:\_Data\CSharp_SudokuSolver\CSharp_SudokuSolver\obj\Debug\CSharp_SudokuSolver.Form1.resources
+C:\_Data\CSharp_SudokuSolver\CSharp_SudokuSolver\obj\Debug\CSharp_SudokuSolver.Properties.Resources.resources
+C:\_Data\CSharp_SudokuSolver\CSharp_SudokuSolver\obj\Debug\Sudoku_Application.csproj.GenerateResource.Cache
+C:\_Data\CSharp_SudokuSolver\CSharp_SudokuSolver\obj\Debug\CSharp_SudokuSolver.exe
+C:\_Data\CSharp_SudokuSolver\CSharp_SudokuSolver\obj\Debug\CSharp_SudokuSolver.pdb

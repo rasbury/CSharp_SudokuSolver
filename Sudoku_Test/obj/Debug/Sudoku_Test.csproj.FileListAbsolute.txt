@@ -1,0 +1,8 @@
+C:\_Data\CSharp_SudokuSolver\Sudoku_Test\bin\Debug\Sudoku_Test.dll
+C:\_Data\CSharp_SudokuSolver\Sudoku_Test\bin\Debug\Sudoku_Test.pdb
+C:\_Data\CSharp_SudokuSolver\Sudoku_Test\bin\Debug\Microsoft.VisualStudio.QualityTools.UnitTestFramework.dll
+C:\_Data\CSharp_SudokuSolver\Sudoku_Test\bin\Debug\Sudoku_BusinessLogic.dll
+C:\_Data\CSharp_SudokuSolver\Sudoku_Test\bin\Debug\Sudoku_BusinessLogic.pdb
+C:\_Data\CSharp_SudokuSolver\Sudoku_Test\obj\Debug\Sudoku_Test.csprojResolveAssemblyReference.cache
+C:\_Data\CSharp_SudokuSolver\Sudoku_Test\obj\Debug\Sudoku_Test.dll
+C:\_Data\CSharp_SudokuSolver\Sudoku_Test\obj\Debug\Sudoku_Test.pdb

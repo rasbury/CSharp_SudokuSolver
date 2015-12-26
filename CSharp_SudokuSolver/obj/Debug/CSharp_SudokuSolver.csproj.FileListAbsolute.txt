@@ -1,0 +1,1 @@
+C:\_Data\CSharp_SudokuSolver\CSharp_SudokuSolver\bin\Debug\CSharp_SudokuSolver.exe.config

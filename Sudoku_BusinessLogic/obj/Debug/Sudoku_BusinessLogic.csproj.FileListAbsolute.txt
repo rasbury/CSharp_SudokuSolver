@@ -1,0 +1,5 @@
+C:\_Data\CSharp_SudokuSolver\Sudoku_BusinessLogic\bin\Debug\Sudoku_BusinessLogic.dll
+C:\_Data\CSharp_SudokuSolver\Sudoku_BusinessLogic\bin\Debug\Sudoku_BusinessLogic.pdb
+C:\_Data\CSharp_SudokuSolver\Sudoku_BusinessLogic\obj\Debug\Sudoku_BusinessLogic.csprojResolveAssemblyReference.cache
+C:\_Data\CSharp_SudokuSolver\Sudoku_BusinessLogic\obj\Debug\Sudoku_BusinessLogic.dll
+C:\_Data\CSharp_SudokuSolver\Sudoku_BusinessLogic\obj\Debug\Sudoku_BusinessLogic.pdb

@@ -10,17 +10,26 @@ namespace Sudoku_BusinessLogic
     {
 
         public int Value { get; set; }
-        //public Boolean IsChangeable { get; }
+        public bool IsChangeable { get; }
 
         /// <summary>
         /// Cell creator - Changeable can only be set here
         /// </summary>
+        public Cell(int value, bool ischangeable)
+        {
+            Value = value;
+            IsChangeable = ischangeable;
+        }
+
+
+        /// <summary>
+        /// Cell creator - defaults to changeable
+        /// </summary>
         public Cell(int value)
         {
             Value = value;
-            //IsChangeable = changeable;
+            IsChangeable = true;
         }
-        
 
     }
 }

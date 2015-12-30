@@ -9,6 +9,7 @@ namespace Sudoku_BusinessLogic
     public class Group
     {
         public List<Cell> Cells { get; set; }
+        public int GroupSize {get; set; }
 
         public Group(List<int> numbers)
         {
@@ -17,7 +18,22 @@ namespace Sudoku_BusinessLogic
             {
                 Cells.Add(new Cell(number));
             }
+            GroupSize = 9;
+        }
 
+        public Group(List<Cell> newcells)
+        {
+            Cells = newcells;
+            GroupSize = 9;
+        }
+
+        /// <summary>
+        /// List must be of size 9; no other Sudoku sizes are currently supported
+        /// </summary>
+        /// <returns></returns>
+        public bool IsValidSize()
+        {
+            return Cells.Count == GroupSize;
         }
 
         /// <summary>
@@ -25,22 +41,19 @@ namespace Sudoku_BusinessLogic
         /// </summary>
         public bool IsComplete()
         {
-            /* for (int i = 1; i <= Cells.Count; i++)
-             {
-                 Boolean found = false;
-                 foreach (Cell mycell in Cells)
-                 {
-                     if mycell.Value = i;
-                     {
-
-                     }
-                 }
-
-             }*/
+            if (!IsValidSize()) { return false; }
 
             List<int> intlist = ToIntList();
 
-            return intlist.Min() == 1;
+            for (int i = 1; i <= intlist.Count; i++)
+            {
+                if (!intlist.Contains(i))
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         public List<int> ToIntList()

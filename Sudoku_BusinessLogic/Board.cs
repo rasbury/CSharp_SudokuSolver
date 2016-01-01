@@ -11,46 +11,108 @@ namespace Sudoku_BusinessLogic
     /// </summary>
     public class Board
     {
+        #region  Properties 
 
         public List<Cell> Cells { get; set; }
-        public int BoxSize { get; set; }
-        public int BoxCount { get; set; }
+
+        /// <summary>
+        /// Number of boxes in a row, a column, or a square, and also the count of rows, columns, and squares
+        /// </summary>
+        private int BoardDimension { get; set; }
+
+        /// <summary>
+        /// Number of boxes in a row or column in a Square, and also the count of rows and columns in that square
+        /// </summary>
+        private int SquareDimension { get; set; }
+
+        private void SetDefaultValues()
+        {
+
+            BoardDimension = 9;
+            SquareDimension = 3;
+        }
+
+
+        public List<Group> Rows()
+        {
+            List<Group> rowlist = new List<Group>();
+
+            //rows = item 0-8, 9-17, etc
+            for (int i = 0; i < Cells.Count; i += BoardDimension)
+            {
+                rowlist.Add(new Group(Cells.GetRange(i, BoardDimension)));
+            }
+            return rowlist;
+        }
+
+        public List<Group> Columns()
+        {
+            List<Group> collist = new List<Group>();
+
+            //columns =  item 0,9,18.., 1,10,19... etc
+            for (int column = 0; column < BoardDimension; column += 1)
+            {
+
+                List<Cell> ColumnValues = new List<Cell>();
+                for (int index = column; index <= column + (BoardDimension * (BoardDimension - 1)); index += BoardDimension)
+                {
+                    ColumnValues.Add(Cells[index]);
+                }
+
+                collist.Add(new Group(ColumnValues));
+
+            }
+            return collist;
+        }
+
+        public List<Group> Squares()
+        {
+            List<Group> squarelist = new List<Group>();
+            //square = item 0,1,2,9,10,11...3,4,5,12,13,14... etc
+
+            for (int gridrow = 0; gridrow < BoardDimension; gridrow += SquareDimension)
+            {
+
+                for (int gridcol = 0; gridcol < BoardDimension; gridcol += SquareDimension)
+                {
+                    List<Cell> ColumnValues = new List<Cell>();
+
+                    for (int Squarerow = gridrow; Squarerow < gridrow + SquareDimension; Squarerow += BoardDimension)
+                    {
+                        for (int squarecol = Squarerow; squarecol < Squarerow + SquareDimension; squarecol++)
+                        {
+                            ColumnValues.Add(Cells[squarecol]);
+                        }
+
+                    }
+
+                    squarelist.Add(new Group(ColumnValues));
+                }
+
+            }
+            return squarelist;
+
+        }
+
+        #endregion
+
+        #region Initializers
 
 
         /// <summary>
         /// Any blank cells should be initialized with zeroes
         /// </summary>
         /// <param name="numbers"></param>
-        public Board(List<Cell> numbers, int boxsize, int boxcount)
+        public Board(List<Cell> numbers)
         {
             Cells = numbers;
-            BoxSize = boxsize;
-            BoxCount = boxcount;
-
+            SetDefaultValues();
         }
 
         /// <summary>
         /// Any blank cells should be initialized with zeroes
         /// </summary>
         /// <param name="numbers"></param>
-        public Board(List<int> numbers, int boxsize, int boxcount)
-        {
-            Cells = new List<Cell>();
-            foreach (int number in numbers)
-            {
-                Cells.Add(new Cell(number));
-            }
-            BoxSize = boxsize;
-            BoxCount = boxcount;
-             
-        }
-
-        /// <summary>
-        /// Defaults to a 9x9 grid
-        /// </summary>
-        /// <param name="numbers"></param>
-        /// <param name="boxsize"></param>
-        /// <param name="boxcount"></param>
         public Board(List<int> numbers)
         {
             Cells = new List<Cell>();
@@ -58,37 +120,114 @@ namespace Sudoku_BusinessLogic
             {
                 Cells.Add(new Cell(number));
             }
-            BoxSize = 9;
-            BoxCount = 9;
+            SetDefaultValues();
 
         }
+
+        #endregion
+
+        #region Validations
 
 
         public bool IsValidSize()
         {
-            return Cells.Count == BoxSize * BoxCount;
+            return Cells.Count == BoardDimension * BoardDimension;
         }
 
 
 
         public bool IsComplete()
         {
-            if (!IsValidSize()) { return false; }
-
-            return RowsAreComplete();
+            return IsValidSize() &&
+                RowsAreComplete() &&
+                ColumnsAreComplete() &&
+                SquaresAreComplete();
         }
 
-        private bool RowsAreComplete()
+        public bool IsValid()
         {
-            //for each group, item 1-9, 10-18, etc, make sure is complete
-            for (int i = 1; i <= Cells.Count; i += BoxSize)
+            return IsValidSize() &&
+                RowsAreValid() &&
+                ColumnsAreValid() &&
+                SquaresAreValid();
+        }
+
+
+
+
+
+
+        public bool RowsAreComplete()
+        {
+            foreach (Group checkgroup in Rows())
             {
-                Group checkgroup = new Group(Cells.GetRange(i-1, BoxSize));
                 if (!checkgroup.IsComplete()) { return false; }
 
             }
             return true;
 
         }
+
+        public bool ColumnsAreComplete()
+        {
+
+            foreach (Group checkgroup in Columns())
+            {
+                if (!checkgroup.IsComplete()) { return false; }
+
+            }
+            return true;
+
+        }
+
+        public bool SquaresAreComplete()
+        {
+
+            foreach (Group checkgroup in Squares())
+            {
+                if (!checkgroup.IsComplete()) { return false; }
+
+            }
+            return true;
+
+        }
+
+
+        public bool RowsAreValid()
+        {
+            foreach (Group checkgroup in Rows())
+            {
+                if (!checkgroup.IsValid()) { return false; }
+
+            }
+            return true;
+
+        }
+
+        public bool ColumnsAreValid()
+        {
+
+            foreach (Group checkgroup in Columns())
+            {
+                if (!checkgroup.IsValid()) { return false; }
+
+            }
+            return true;
+
+        }
+
+        public bool SquaresAreValid()
+        {
+
+            foreach (Group checkgroup in Squares())
+            {
+                if (!checkgroup.IsValid()) { return false; }
+
+            }
+            return true;
+
+        }
+
+        #endregion
     }
 }

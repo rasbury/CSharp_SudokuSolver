@@ -31,5 +31,14 @@ namespace Sudoku_BusinessLogic
             IsChangeable = true;
         }
 
+        /// <summary>
+        /// Adds 1 to current value, rolls over to 0 if it would hit 10
+        /// </summary>
+        public void IncrementValueBy1()
+        {
+            Value += 1;
+            if (Value > 9) { Value = 0; }
+        }
+
     }
 }

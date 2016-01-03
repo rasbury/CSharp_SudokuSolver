@@ -70,14 +70,14 @@ namespace Sudoku_BusinessLogic
             List<Group> squarelist = new List<Group>();
             //square = item 0,1,2,9,10,11...3,4,5,12,13,14... etc
 
-            for (int gridrow = 0; gridrow < BoardDimension; gridrow += SquareDimension)
+            for (int gridrow = 0; gridrow < (BoardDimension * BoardDimension); gridrow += (SquareDimension * BoardDimension))
             {
 
-                for (int gridcol = 0; gridcol < BoardDimension; gridcol += SquareDimension)
+                for (int gridcol = gridrow; gridcol < (gridrow + BoardDimension); gridcol += SquareDimension)
                 {
                     List<Cell> ColumnValues = new List<Cell>();
 
-                    for (int Squarerow = gridrow; Squarerow < gridrow + SquareDimension; Squarerow += BoardDimension)
+                    for (int Squarerow = gridcol; Squarerow < gridcol + (SquareDimension * BoardDimension); Squarerow += BoardDimension)
                     {
                         for (int squarecol = Squarerow; squarecol < Squarerow + SquareDimension; squarecol++)
                         {

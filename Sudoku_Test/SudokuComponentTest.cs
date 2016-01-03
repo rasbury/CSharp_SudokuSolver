@@ -193,18 +193,32 @@ namespace Sudoku_BusinessLogic.Tests
 
         }
 
-        /// <summary>
-        /// TBD: I can run this test on rows or columns and it returns true.  Need something more distinct to test the squares only
-        /// </summary>
         [TestMethod()]
         public void BoardTest_SquaresAreComplete()
         {
-            //here's a "complete" one, do we get a yes?
+            //Squares are a little more complicated, so let's add a simple check that a "Square" on the solved puzzle is what we expect
             Board completeBoard = new Board(SolvedSudokuPuzzle1());
-            Assert.IsTrue(completeBoard.ColumnsAreComplete(), "SquaresAreComplete: Valid board's columns were not considered complete.");
+            List<Group> Squares = completeBoard.Squares();
+            Group ExpectedFirstSquare = new Group(new List<int> { 5, 3, 4, 6, 7, 2, 1, 9, 8 });
+            Group ExpectedMiddleSquare = new Group(new List<int> { 7, 6, 1, 8, 5, 3, 9, 2, 4 });
+            Group ExpectedLastSquare = new Group(new List<int> { 2, 8, 4, 6, 3, 5, 1, 7, 9 });
+            string GroupToString = string.Empty;
+            foreach (Group gr in Squares)
+            {
+                GroupToString += gr.ValuesToString() + ";";
+            }
+            Assert.IsTrue(CellListsAreEqual(Squares[0].Cells, ExpectedFirstSquare.Cells), "SquaresAreComplete: First square " +
+                "on solved board is different from expected! " + GroupToString);
+            Assert.IsTrue(CellListsAreEqual(Squares[4].Cells, ExpectedMiddleSquare.Cells), "SquaresAreComplete: Middle square " +
+                "on solved board is different from expected! " + GroupToString);
+            Assert.IsTrue(CellListsAreEqual(Squares[8].Cells, ExpectedLastSquare.Cells), "SquaresAreComplete: Last square " +
+                "on solved board is different from expected! " + GroupToString);
+
+            //here's a "complete" one, do we get a yes?
+            Assert.IsTrue(completeBoard.SquaresAreComplete(), "SquaresAreComplete: Valid board's columns were not considered complete.");
 
             completeBoard.Cells[15] = new Cell(0);
-            Assert.IsFalse(completeBoard.ColumnsAreComplete(), "SquaresAreComplete: Board with one zero was considered complete.");
+            Assert.IsFalse(completeBoard.SquaresAreComplete(), "SquaresAreComplete: Board with one zero was considered complete.");
 
 
             Board swappedElementsBoard = new Board(SolvedSudokuPuzzle1());
@@ -214,14 +228,14 @@ namespace Sudoku_BusinessLogic.Tests
             swappedElementsBoard.Cells[1] = swappedElementsBoard.Cells[10];
             swappedElementsBoard.Cells[10] = swapcell;
             //If we swap within a square, that should be considered complete, because the square test alone doesn't know any better
-            Assert.IsTrue(swappedElementsBoard.ColumnsAreComplete(), "SquaresAreComplete: Board with elements rearranged within the same square was not considered complete");
+            Assert.IsTrue(swappedElementsBoard.SquaresAreComplete(), "SquaresAreComplete: Board with elements rearranged within the same square was not considered complete");
 
             swapcell = swappedElementsBoard.Cells[2];
             swappedElementsBoard.Cells[2] = swappedElementsBoard.Cells[5];
             swappedElementsBoard.Cells[5] = swapcell;
 
             //but it should complain if elements are swapped between two squares
-            Assert.IsFalse(swappedElementsBoard.ColumnsAreComplete(), "SquaresAreComplete: Board with elements swapped between squares was considered complete");
+            Assert.IsFalse(swappedElementsBoard.SquaresAreComplete(), "SquaresAreComplete: Board with elements swapped between squares was considered complete");
 
 
         }
@@ -234,7 +248,7 @@ namespace Sudoku_BusinessLogic.Tests
         /// Solved board from from https://en.wikipedia.org/wiki/Sudoku
         /// </summary>
         /// <returns></returns>
-        public List<Cell> SolvedSudokuPuzzle1()
+        public static List<Cell> SolvedSudokuPuzzle1()
         {
 
             List<Cell> completelist = new List<Cell>();
@@ -260,7 +274,7 @@ namespace Sudoku_BusinessLogic.Tests
         /// Unsolved board from from https://en.wikipedia.org/wiki/Sudoku
         /// </summary>
         /// <returns></returns>
-        public List<Cell> UnsolvedSudokuPuzzle1()
+        public static List<Cell> UnsolvedSudokuPuzzle1()
         {
 
             List<Cell> completelist = new List<Cell>();
@@ -280,6 +294,21 @@ namespace Sudoku_BusinessLogic.Tests
             return completelist;
 
 
+        }
+
+        public static bool CellListsAreEqual(List<Cell> firstlist, List<Cell> secondlist)
+        {
+            //they obviously can't be equal if they're different lengths
+            if (firstlist.Count != secondlist.Count) { return false; }
+
+            //sure, they're equal if they're both empty
+            if (firstlist.Count == 0) { return true; }
+
+            for (int i = 0; i < firstlist.Count; i++)
+            {
+                if (firstlist[i].Value != secondlist[i].Value) { return false; }
+            }
+            return true;
         }
 
     }

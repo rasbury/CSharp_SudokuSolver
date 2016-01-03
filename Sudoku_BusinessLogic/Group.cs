@@ -10,7 +10,7 @@ namespace Sudoku_BusinessLogic
     {
         public List<Cell> Cells { get; set; }
         public int GroupSize = 9;
-
+        
         public Group(List<int> numbers)
         {
             Cells = new List<Cell>();
@@ -108,6 +108,16 @@ namespace Sudoku_BusinessLogic
             }
 
             return missingelements;
+        }
+
+        public string ValuesToString()
+        {
+            string returnstring = string.Empty;
+            foreach(Cell c in Cells)
+            {
+                returnstring += c.Value + ", ";
+            }
+            return returnstring;
         }
 
     }

@@ -5,21 +5,21 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Sudoku_BusinessLogic.Tests
 {
-    class BruteForceTest
+    [TestClass()]
+    public class BruteForceTest
     {
 
-        //[TestMethod()]
-        //public void CellCreatorTest()
-        //{
-        //    Cell mycell = new Cell(1);
-        //    Assert.AreEqual(mycell.Value, 1);
-        //    Assert.AreEqual(mycell.IsChangeable, true);
+        [TestMethod()]
+        public void BruteForceSimpleTest()
+        {
+            //make sure test does nothing on an already-solved board
+            List<Cell> solvedcells = BoardTest.SolvedSudokuPuzzle1();
+            Board solvedboard = new Board(solvedcells);
+            BruteForceSolver solver = new BruteForceSolver();
+            solver.BruteForceSolve(ref solvedboard);
 
-
-        //    Cell mycell2 = new Cell(5, false);
-        //    Assert.AreEqual(mycell2.Value, 5);
-        //    Assert.AreEqual(mycell2.IsChangeable, false);
-        //}
+            Assert.IsTrue(BoardTest.CellListsAreEqual(solvedboard.Cells, solvedcells), "Brute force solver changed values on an already-solved board");
+        }
 
     }
 }

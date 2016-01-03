@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Sudoku_BusinessLogic
 {
-    class BruteForceSolver
+    public class BruteForceSolver
     {
 
         public void BruteForceSolve(ref Board board)

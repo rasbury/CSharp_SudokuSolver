@@ -1,12 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Sudoku_BusinessLogic
 {
     public class BruteForceSolver
     {
 
+        Stack<int> ModifiedCells;
+
         public void BruteForceSolve(ref Board board)
         {
+            ModifiedCells = new Stack<int>();
             while (!board.IsComplete())
             {
 
@@ -29,8 +33,9 @@ namespace Sudoku_BusinessLogic
                         {
 
                             //we could not find a valid value.  Blank this one out, Back up to the previous editable cell and change it by 1
-                            board.Cells[Index].Value = 0;
-                            board.Cells[IndexOfPreviousEditableCell(ref board, Index)].IncrementValueBy1();
+                            board.Cells[Index].BlankOutCell();
+                            RevisePreviousGuess(ref board);
+                            //board.Cells[IndexOfPreviousEditableCell(ref board, Index)].IncrementValueBy1();
                         }
 
                     }
@@ -38,6 +43,8 @@ namespace Sudoku_BusinessLogic
                 else
                 {
                     //we somehow got the board into an invalid state.  Back up and try again
+                    int Index = IndexOfNextBlankCell(ref board);
+                    board.Cells[IndexOfPreviousEditableCell(ref board, Index)].IncrementValueBy1();
                 }
 
             }
@@ -52,14 +59,35 @@ namespace Sudoku_BusinessLogic
             int OriginalValue = board.Cells[IndexOfCell].Value;
             board.Cells[IndexOfCell].IncrementValueBy1();
 
-            while (board.Cells[IndexOfCell].Value != OriginalValue)
+            while ((!board.IsValid()) && 
+                (board.Cells[IndexOfCell].Value != OriginalValue))
             {
-                if (!board.IsValid()) { board.Cells[IndexOfCell].IncrementValueBy1(); }
+                board.Cells[IndexOfCell].IncrementValueBy1();
             }
 
+            //record this cell as the last one we changed
+            if (board.Cells[IndexOfCell].Value != OriginalValue && board.Cells[IndexOfCell].Value > 0)
+            {
+                ModifiedCells.Push(IndexOfCell);
+            }
             //we just came around to where we started.  We failed to solve it
-            return (board.Cells[IndexOfCell].Value == OriginalValue);
+            //but if we're here and the result isn't the original value, we found another solution!
+            return (board.Cells[IndexOfCell].Value != OriginalValue && board.Cells[IndexOfCell].Value>0);
 
+        }
+
+        public bool RevisePreviousGuess(ref Board board)
+        {
+            bool ValueChanged = false;
+            while (!ValueChanged && ModifiedCells.Count > 0)
+            {
+                int IndexToTry = ModifiedCells.Pop();
+                ValueChanged = TrySolveCell(ref board, IndexToTry);
+                //if we couldn't solve the cell, reset it for next time
+                if (!ValueChanged) { board.Cells[IndexToTry].BlankOutCell(); }
+            }
+
+            return ValueChanged;
         }
 
         public int IndexOfNextBlankCell(ref Board board)
@@ -71,18 +99,20 @@ namespace Sudoku_BusinessLogic
             return -1;
         }
 
-        public int IndexOfPreviousEditableCell(ref Board board, int lastindex)
+        public int IndexOfPreviousEditableCell(ref Board board, int lastIndex)
         {
-            int returnindex = lastindex - 1;
-            while (returnindex > 0 && !board.Cells[returnindex].IsChangeable)
+            int ReturnIndex = lastIndex - 1;
+            while (ReturnIndex > 0 && !board.Cells[ReturnIndex].IsChangeable)
             {
-                returnindex -= 1;
+                ReturnIndex -= 1;
             }
 
             //not really sure what it would mean if we have no previous editable cells...
             //maybe that we're at the beginning?  But if so, we really shouldn't have backtracked this far
             //I suppose this could cause an infinite loop, but I think we'd just head forward instead
-            return 0;
+            if (ReturnIndex < 0) { ReturnIndex = 0; }
+
+            return ReturnIndex;
         }
 
 

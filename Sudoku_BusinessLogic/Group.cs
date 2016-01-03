@@ -116,7 +116,16 @@ namespace Sudoku_BusinessLogic
             string Returnstring = string.Empty;
             foreach(Cell c in Cells)
             {
-                Returnstring += c.Value + ", ";
+                if (c.IsChangeable)
+                {
+                    Returnstring += c.Value + ", ";
+
+                }
+                else
+                {
+                    Returnstring += "[" + c.Value + "], ";
+
+                }
             }
             return Returnstring;
         }

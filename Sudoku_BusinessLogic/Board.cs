@@ -90,6 +90,16 @@ namespace Sudoku_BusinessLogic
 
         }
 
+        public string PrintBoard()
+        {
+            string RowsToString = string.Empty;
+            foreach (Group gr in Rows())
+            {
+                RowsToString += gr.ValuesToString() + System.Environment.NewLine;
+            }
+            return RowsToString;
+        }
+
         #endregion
 
         #region Initializers

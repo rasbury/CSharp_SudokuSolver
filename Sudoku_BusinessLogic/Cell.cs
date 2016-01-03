@@ -1,24 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Sudoku_BusinessLogic
+﻿namespace Sudoku_BusinessLogic
 {
-    public class Cell 
+    public class Cell
     {
 
-        public int Value { get; set; }
+        private int MyValue; //so you make infinite loops and crash unit testing if you have a property that sets itself, like Value below...
+
+        public int Value 
+        {
+            get { return MyValue; }
+            set { if (IsChangeable) { MyValue = value; } }
+        }
+
         public bool IsChangeable { get; }
 
         /// <summary>
         /// Cell creator - Changeable can only be set here
         /// </summary>
-        public Cell(int value, bool ischangeable)
+        public Cell(int value, bool isChangeable)
         {
-            Value = value;
-            IsChangeable = ischangeable;
+            MyValue = value;
+            IsChangeable = isChangeable;
         }
 
 
@@ -27,7 +28,7 @@ namespace Sudoku_BusinessLogic
         /// </summary>
         public Cell(int value)
         {
-            Value = value;
+            MyValue = value;
             IsChangeable = true;
         }
 

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace Sudoku_BusinessLogic
 {
@@ -35,62 +31,62 @@ namespace Sudoku_BusinessLogic
 
         public List<Group> Rows()
         {
-            List<Group> rowlist = new List<Group>();
+            List<Group> RowList = new List<Group>();
 
             //rows = item 0-8, 9-17, etc
             for (int i = 0; i < Cells.Count; i += BoardDimension)
             {
-                rowlist.Add(new Group(Cells.GetRange(i, BoardDimension)));
+                RowList.Add(new Group(Cells.GetRange(i, BoardDimension)));
             }
-            return rowlist;
+            return RowList;
         }
 
         public List<Group> Columns()
         {
-            List<Group> collist = new List<Group>();
+            List<Group> ColumnList = new List<Group>();
 
             //columns =  item 0,9,18.., 1,10,19... etc
-            for (int column = 0; column < BoardDimension; column += 1)
+            for (int Column = 0; Column < BoardDimension; Column += 1)
             {
 
                 List<Cell> ColumnValues = new List<Cell>();
-                for (int index = column; index <= column + (BoardDimension * (BoardDimension - 1)); index += BoardDimension)
+                for (int Index = Column; Index <= Column + (BoardDimension * (BoardDimension - 1)); Index += BoardDimension)
                 {
-                    ColumnValues.Add(Cells[index]);
+                    ColumnValues.Add(Cells[Index]);
                 }
 
-                collist.Add(new Group(ColumnValues));
+                ColumnList.Add(new Group(ColumnValues));
 
             }
-            return collist;
+            return ColumnList;
         }
 
         public List<Group> Squares()
         {
-            List<Group> squarelist = new List<Group>();
+            List<Group> SquareList = new List<Group>();
             //square = item 0,1,2,9,10,11...3,4,5,12,13,14... etc
 
-            for (int gridrow = 0; gridrow < (BoardDimension * BoardDimension); gridrow += (SquareDimension * BoardDimension))
+            for (int GridRow = 0; GridRow < (BoardDimension * BoardDimension); GridRow += (SquareDimension * BoardDimension))
             {
 
-                for (int gridcol = gridrow; gridcol < (gridrow + BoardDimension); gridcol += SquareDimension)
+                for (int GridColumn = GridRow; GridColumn < (GridRow + BoardDimension); GridColumn += SquareDimension)
                 {
                     List<Cell> ColumnValues = new List<Cell>();
 
-                    for (int Squarerow = gridcol; Squarerow < gridcol + (SquareDimension * BoardDimension); Squarerow += BoardDimension)
+                    for (int Squarerow = GridColumn; Squarerow < GridColumn + (SquareDimension * BoardDimension); Squarerow += BoardDimension)
                     {
-                        for (int squarecol = Squarerow; squarecol < Squarerow + SquareDimension; squarecol++)
+                        for (int SquareColumn = Squarerow; SquareColumn < Squarerow + SquareDimension; SquareColumn++)
                         {
-                            ColumnValues.Add(Cells[squarecol]);
+                            ColumnValues.Add(Cells[SquareColumn]);
                         }
 
                     }
 
-                    squarelist.Add(new Group(ColumnValues));
+                    SquareList.Add(new Group(ColumnValues));
                 }
 
             }
-            return squarelist;
+            return SquareList;
 
         }
 
@@ -171,9 +167,9 @@ namespace Sudoku_BusinessLogic
         public bool ColumnsAreComplete()
         {
 
-            foreach (Group checkgroup in Columns())
+            foreach (Group CheckGroup in Columns())
             {
-                if (!checkgroup.IsComplete()) { return false; }
+                if (!CheckGroup.IsComplete()) { return false; }
 
             }
             return true;
@@ -183,9 +179,9 @@ namespace Sudoku_BusinessLogic
         public bool SquaresAreComplete()
         {
 
-            foreach (Group checkgroup in Squares())
+            foreach (Group CheckGroup in Squares())
             {
-                if (!checkgroup.IsComplete()) { return false; }
+                if (!CheckGroup.IsComplete()) { return false; }
 
             }
             return true;
@@ -195,9 +191,9 @@ namespace Sudoku_BusinessLogic
 
         public bool RowsAreValid()
         {
-            foreach (Group checkgroup in Rows())
+            foreach (Group CheckGroup in Rows())
             {
-                if (!checkgroup.IsValid()) { return false; }
+                if (!CheckGroup.IsValid()) { return false; }
 
             }
             return true;
@@ -207,9 +203,9 @@ namespace Sudoku_BusinessLogic
         public bool ColumnsAreValid()
         {
 
-            foreach (Group checkgroup in Columns())
+            foreach (Group CheckGroup in Columns())
             {
-                if (!checkgroup.IsValid()) { return false; }
+                if (!CheckGroup.IsValid()) { return false; }
 
             }
             return true;
@@ -219,9 +215,9 @@ namespace Sudoku_BusinessLogic
         public bool SquaresAreValid()
         {
 
-            foreach (Group checkgroup in Squares())
+            foreach (Group CheckGroup in Squares())
             {
-                if (!checkgroup.IsValid()) { return false; }
+                if (!CheckGroup.IsValid()) { return false; }
 
             }
             return true;

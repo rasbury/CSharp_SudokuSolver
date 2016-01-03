@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Sudoku_BusinessLogic
 {
@@ -20,9 +17,9 @@ namespace Sudoku_BusinessLogic
             }
         }
 
-        public Group(List<Cell> newcells)
+        public Group(List<Cell> newCells)
         {
-            Cells = newcells;
+            Cells = newCells;
         }
 
         /// <summary>
@@ -61,14 +58,15 @@ namespace Sudoku_BusinessLogic
         {
             if (!IsValidSize()) { return false; }
 
-            List<int> intlist = ToIntList();
+            List<int> IntList = ToIntList();
 
             //here's my first foray into the land of LINQ
             //  (help from http://stackoverflow.com/questions/454601/how-to-count-duplicates-in-list-with-linq)
             //Grouping the ints, selecting only the ones with count > 1 and x > 0
             //Had some trouble figuring out how to just check if q's count was > 0, 
             //  so went with a foreach that'll return the first time it's hit
-            var q = from x in intlist
+            //  Inelegant, but works
+            var q = from x in IntList
                     where x > 0
                     group x by x into g
                     let count = g.Count()
@@ -85,39 +83,42 @@ namespace Sudoku_BusinessLogic
 
         public List<int> ToIntList()
         {
-            List<int> intlist = new List<int>();
-            foreach (Cell mycell in Cells)
+            List<int> IntList = new List<int>();
+            foreach (Cell MyCell in Cells)
             {
-                intlist.Add(mycell.Value);
+                IntList.Add(MyCell.Value);
             }
-            return intlist;
+            return IntList;
         }
 
         public List<int> MissingElements()
         {
 
-            List<int> intlist = ToIntList();
-            List<int> missingelements = new List<int>();
+            List<int> IntList = ToIntList();
+            List<int> MissingElements = new List<int>();
 
-            for (int i = 1; i <= intlist.Count; i++)
+            for (int i = 1; i <= IntList.Count; i++)
             {
-                if (!intlist.Contains(i))
+                if (!IntList.Contains(i))
                 {
-                    missingelements.Add(i);
+                    MissingElements.Add(i);
                 }
             }
 
-            return missingelements;
+            return MissingElements;
         }
 
+        /// <summary>
+        /// Just to help me with debugging those squares, eventual display probably won't use this
+        /// </summary>
         public string ValuesToString()
         {
-            string returnstring = string.Empty;
+            string Returnstring = string.Empty;
             foreach(Cell c in Cells)
             {
-                returnstring += c.Value + ", ";
+                Returnstring += c.Value + ", ";
             }
-            return returnstring;
+            return Returnstring;
         }
 
     }

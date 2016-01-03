@@ -1,6 +1,4 @@
-﻿using Sudoku_BusinessLogic;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Sudoku_BusinessLogic.Tests
@@ -13,12 +11,16 @@ namespace Sudoku_BusinessLogic.Tests
         public void BruteForceSimpleTest()
         {
             //make sure test does nothing on an already-solved board
-            List<Cell> solvedcells = BoardTest.SolvedSudokuPuzzle1();
-            Board solvedboard = new Board(solvedcells);
-            BruteForceSolver solver = new BruteForceSolver();
-            solver.BruteForceSolve(ref solvedboard);
+            List<Cell> SolvedCells = BoardTest.SolvedSudokuPuzzle1();
+            Board SolvedBoard = new Board(SolvedCells);
+            BruteForceSolver Solver = new BruteForceSolver();
+            Solver.BruteForceSolve(ref SolvedBoard);
 
-            Assert.IsTrue(BoardTest.CellListsAreEqual(solvedboard.Cells, solvedcells), "Brute force solver changed values on an already-solved board");
+            Assert.IsTrue(BoardTest.CellListsAreEqual(SolvedBoard.Cells, SolvedCells), "Brute force solver changed values on an already-solved board");
+
+            //now let's blank out one value on our board, and see the brute force solver fill it in
+
+            //Board MissingOneBoard = new Board(solvedcells);
         }
 
     }

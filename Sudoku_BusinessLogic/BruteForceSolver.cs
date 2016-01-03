@@ -5,47 +5,34 @@ namespace Sudoku_BusinessLogic
 {
     public class BruteForceSolver
     {
-
-        Stack<int> ModifiedCells;
+        public static string InvalidBoardMessage = "Board passed to this method is not solvable, was already invalid.";
+        public static string UnsolvableBoardmessage = "This board is unsolvable.";  //actually, it looks like all sudokus are solvable via brute force
+                                                                                    //it's just that logical strategies can't figure out all of them
+        private Stack<int> ModifiedCells;
 
         public void BruteForceSolve(ref Board board)
         {
+            //fail fast if they send us a bad board to solve
+            if (!board.IsValid()) {throw new Exception(InvalidBoardMessage);}
+
             ModifiedCells = new Stack<int>();
             while (!board.IsComplete())
             {
 
-                if (board.IsValid())
-                {
-                    //try to fill in the next empty cell, since we haven't broken anything yet
-                    int Index = IndexOfNextBlankCell(ref board);
-                    if (Index < 0)
-                    {
-                        //we're valid, but we have no blank cells...that's weird, and shouldn't have happened
-                        if (board.IsComplete()) { break; }
-                        else { throw new Exception("No blank cells available, all is valid, but board is not complete!"); }
-                    }
-                    else
-                    {
-                        //so we know this cell's value is 0, and we're going to put it to 1 now.  
-                        //If 1 isn't valid, we'll keep cycling through #s until we hit a valid option or we're back at 0
-                        //if we're back at 0, this method returns false
-                        if (!TrySolveCell(ref board, Index))
-                        {
+                //try to fill in the next empty cell, since we haven't broken anything yet
+                int Index = IndexOfNextBlankCell(ref board);
 
-                            //we could not find a valid value.  Blank this one out, Back up to the previous editable cell and change it by 1
-                            board.Cells[Index].BlankOutCell();
-                            RevisePreviousGuess(ref board);
-                            //board.Cells[IndexOfPreviousEditableCell(ref board, Index)].IncrementValueBy1();
-                        }
-
-                    }
-                }
-                else
+                //so we know this cell's value is 0, and we're going to put it to 1 now.  
+                //If 1 isn't valid, we'll keep cycling through #s until we hit a valid option or we're back at 0
+                //if we're back at 0, this method returns false
+                if (!TrySolveCell(ref board, Index))
                 {
-                    //we somehow got the board into an invalid state.  Back up and try again
-                    int Index = IndexOfNextBlankCell(ref board);
-                    board.Cells[IndexOfPreviousEditableCell(ref board, Index)].IncrementValueBy1();
+                    //we could not find a valid value.  Blank this one out, Back up to the previous editable cell and change it by 1
+                    board.Cells[Index].BlankOutCell();
+                    //This exception should never be hit from brute force
+                    if (!RevisePreviousGuess(ref board)) { throw new Exception(UnsolvableBoardmessage); }
                 }
+
 
             }
 
@@ -59,7 +46,7 @@ namespace Sudoku_BusinessLogic
             int OriginalValue = board.Cells[IndexOfCell].Value;
             board.Cells[IndexOfCell].IncrementValueBy1();
 
-            while ((!board.IsValid()) && 
+            while ((!board.IsValid()) &&
                 (board.Cells[IndexOfCell].Value != OriginalValue))
             {
                 board.Cells[IndexOfCell].IncrementValueBy1();
@@ -72,10 +59,16 @@ namespace Sudoku_BusinessLogic
             }
             //we just came around to where we started.  We failed to solve it
             //but if we're here and the result isn't the original value, we found another solution!
-            return (board.Cells[IndexOfCell].Value != OriginalValue && board.Cells[IndexOfCell].Value>0);
+            return (board.Cells[IndexOfCell].Value != OriginalValue && board.Cells[IndexOfCell].Value > 0);
 
         }
 
+        /// <summary>
+        /// We found a cell where no value is correct, so one of our previous guesses was wrong.  
+        /// Back up through the stack of what we've done, trying alternative values
+        /// </summary>
+        /// <param name="board"></param>
+        /// <returns></returns>
         public bool RevisePreviousGuess(ref Board board)
         {
             bool ValueChanged = false;
@@ -98,47 +91,6 @@ namespace Sudoku_BusinessLogic
             }
             return -1;
         }
-
-        public int IndexOfPreviousEditableCell(ref Board board, int lastIndex)
-        {
-            int ReturnIndex = lastIndex - 1;
-            while (ReturnIndex > 0 && !board.Cells[ReturnIndex].IsChangeable)
-            {
-                ReturnIndex -= 1;
-            }
-
-            //not really sure what it would mean if we have no previous editable cells...
-            //maybe that we're at the beginning?  But if so, we really shouldn't have backtracked this far
-            //I suppose this could cause an infinite loop, but I think we'd just head forward instead
-            if (ReturnIndex < 0) { ReturnIndex = 0; }
-
-            return ReturnIndex;
-        }
-
-
-        //public void FillInMissingValues(ref Group unsolvedgroup)
-        //{
-        //    while (!unsolvedgroup.IsComplete())
-        //    {
-        //        List<int> MissingElements = unsolvedgroup.MissingElements();
-        //        //We will always fill in elements in a predicatable order
-        //        MissingElements.Sort();
-        //        foreach (Cell cell in unsolvedgroup.Cells)
-        //        {
-        //            if (cell.Value == 0)
-        //            {
-        //                //we should never have a case where there are more empty cells than values not assigned,
-        //                //but if that happened, the two lines after this check would explode, probably not neatly
-        //                if (MissingElements.Count == 0) { throw new Exception("Not enough missing elements to fill in a blank cell!"); }
-
-        //                cell.Value = MissingElements[0];
-        //                MissingElements.RemoveAt(0);
-        //            }
-        //        }
-        //    }
-
-        //}
-
 
     }
 }

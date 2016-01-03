@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 
 namespace Sudoku_BusinessLogic.Tests
 {
@@ -10,6 +11,10 @@ namespace Sudoku_BusinessLogic.Tests
         [TestMethod()]
         public void BruteForce_SimpleTest()
         {
+            //For testing purposes, if we need to zero out a cell, we reassign the value in the list to a new "zero cell"
+            //When lists of cells are initialized, if they have values filled in, those values are considered non-changeable
+            //which is good, we want that, just for the purposes of fiddling with data for tests, that's less convenient
+
             //make sure test does nothing on an already-solved board
             List<Cell> SolvedCells = BoardTest.SolvedSudokuPuzzle1();
             Board SolvedBoard = new Board(SolvedCells);
@@ -22,7 +27,7 @@ namespace Sudoku_BusinessLogic.Tests
             //now let's blank out one value on our board, and see the brute force solver fill it in
             Board MissingOneBoard = new Board(SolvedCells);
             int OriginalValue = MissingOneBoard.Cells[8].Value;
-            MissingOneBoard.Cells[8].Value = 0;
+            MissingOneBoard.Cells[8] = new Cell(0);
             Solver.BruteForceSolve(ref MissingOneBoard);
 
             Assert.IsTrue(MissingOneBoard.Cells[8].Value == OriginalValue,
@@ -30,13 +35,14 @@ namespace Sudoku_BusinessLogic.Tests
 
             //now let's blank out three values in a row on our board, and see the brute force solver fill them in
             //this is an incredibly easy sudoku
+
             Board MissingThreeBoard = new Board(SolvedCells);
             int OriginalValue1 = MissingOneBoard.Cells[6].Value;
-            MissingOneBoard.Cells[6].Value = 0;
+            MissingOneBoard.Cells[6] = new Cell(0);
             int OriginalValue2 = MissingOneBoard.Cells[7].Value;
-            MissingOneBoard.Cells[7].Value = 0;
+            MissingOneBoard.Cells[7] = new Cell(0);
             int OriginalValue3 = MissingOneBoard.Cells[8].Value;
-            MissingOneBoard.Cells[8].Value = 0;
+            MissingOneBoard.Cells[8] = new Cell(0);
             Solver.BruteForceSolve(ref MissingOneBoard);
 
             Assert.IsTrue(MissingOneBoard.Cells[6].Value == OriginalValue1 &&
@@ -49,12 +55,12 @@ namespace Sudoku_BusinessLogic.Tests
 
 
             //Let's blank out three more random cells
-             OriginalValue1 = MissingOneBoard.Cells[18].Value;
-            MissingOneBoard.Cells[18].Value = 0;
-             OriginalValue2 = MissingOneBoard.Cells[40].Value;
-            MissingOneBoard.Cells[40].Value = 0;
-             OriginalValue3 = MissingOneBoard.Cells[78].Value;
-            MissingOneBoard.Cells[78].Value = 0;
+            OriginalValue1 = MissingOneBoard.Cells[18].Value;
+            MissingOneBoard.Cells[18] = new Cell(0);
+            OriginalValue2 = MissingOneBoard.Cells[40].Value;
+            MissingOneBoard.Cells[40] = new Cell(0);
+            OriginalValue3 = MissingOneBoard.Cells[78].Value;
+            MissingOneBoard.Cells[78] = new Cell(0);
             Solver.BruteForceSolve(ref MissingOneBoard);
 
             Assert.IsTrue(MissingOneBoard.Cells[18].Value == OriginalValue1 &&
@@ -80,11 +86,11 @@ namespace Sudoku_BusinessLogic.Tests
             //Blanking out values so the first one it comes across has 2 possible valid values, and the first one would be wrong
             //i.e. force it to "guess" and then backtrack
             int OriginalValue1 = MissingOneBoard.Cells[2].Value;
-            MissingOneBoard.Cells[2].Value = 0;
+            MissingOneBoard.Cells[2] = new Cell(0);
             int OriginalValue2 = MissingOneBoard.Cells[11].Value;
-            MissingOneBoard.Cells[11].Value = 0;
+            MissingOneBoard.Cells[11] = new Cell(0);
             int OriginalValue3 = MissingOneBoard.Cells[8].Value;
-            MissingOneBoard.Cells[8].Value = 0;
+            MissingOneBoard.Cells[8] = new Cell(0);
             BruteForceSolver Solver = new BruteForceSolver();
             Solver.BruteForceSolve(ref MissingOneBoard);
 
@@ -98,6 +104,9 @@ namespace Sudoku_BusinessLogic.Tests
 
         }
 
+        /// <summary>
+        /// Make sure we don't get into an infinite loop
+        /// </summary>
         [TestMethod()]
         public void BruteForce_ReviseGuessTest_TwoRevisionsNeeded()
         {
@@ -108,15 +117,15 @@ namespace Sudoku_BusinessLogic.Tests
             //Blanking out values so the first one it comes across has 2 possible valid values, and the first one would be wrong
             //i.e. force it to "guess" and then backtrack
             int OriginalValue1 = MissingOneBoard.Cells[2].Value;
-            MissingOneBoard.Cells[2].Value = 0;
+            MissingOneBoard.Cells[2] = new Cell(0);
             int OriginalValue2 = MissingOneBoard.Cells[11].Value;
-            MissingOneBoard.Cells[11].Value = 0;
+            MissingOneBoard.Cells[11] = new Cell(0);
             int OriginalValue3 = MissingOneBoard.Cells[8].Value;
-            MissingOneBoard.Cells[8].Value = 0;
+            MissingOneBoard.Cells[8] = new Cell(0);
             int OriginalValue4 = MissingOneBoard.Cells[7].Value;
-            MissingOneBoard.Cells[7].Value = 0;
+            MissingOneBoard.Cells[7] = new Cell(0);
             int OriginalValue5 = MissingOneBoard.Cells[18].Value;
-            MissingOneBoard.Cells[18].Value = 0;
+            MissingOneBoard.Cells[18] = new Cell(0);
             BruteForceSolver Solver = new BruteForceSolver();
             Solver.BruteForceSolve(ref MissingOneBoard);
 
@@ -135,7 +144,7 @@ namespace Sudoku_BusinessLogic.Tests
         }
 
         [TestMethod()]
-        public void BruteForce_Board1FullSolve()
+        public void BruteForce_FullSolve()
         {
             //all right, now the real test
             List<Cell> SolvedCells = BoardTest.SolvedSudokuPuzzle1();
@@ -148,6 +157,63 @@ namespace Sudoku_BusinessLogic.Tests
 
             Assert.IsTrue(BoardTest.CellListsAreEqual(UnSolvedBoard.Cells, SolvedCells),
                 "Brute force failed to solve the first test board, its result: " + UnSolvedBoard.PrintBoard());
+
+
+
+            SolvedCells = BoardTest.SolvedSudokuPuzzle2();
+            UnSolvedBoard = new Board(BoardTest.UnsolvedSudokuPuzzle2());
+
+            Solver.BruteForceSolve(ref UnSolvedBoard);
+
+
+            Assert.IsTrue(BoardTest.CellListsAreEqual(UnSolvedBoard.Cells, SolvedCells),
+    "Brute force failed to solve the second test board, its result: " + UnSolvedBoard.PrintBoard());
+        }
+                
+        [TestMethod()]
+        public void BruteForce_UnsolvableHandling()
+        {
+
+            //This puzzle is not invalid yet, but it's going to become invalid real quick
+            //I think this is about the only "unsolvable" option for brute force
+            Board UnSolvedBoard = new Board(BoardTest.UnsolvablePuzzle());
+            bool HitExpectedException = false;
+
+            BruteForceSolver Solver = new BruteForceSolver();
+            try
+            {
+                Solver.BruteForceSolve(ref UnSolvedBoard);
+            }
+            catch (Exception e)
+            {
+                if (e.Message.Equals(BruteForceSolver.UnsolvableBoardmessage)) { HitExpectedException = true; }
+                else { throw e; }
+            }
+            finally
+            {
+                if (!HitExpectedException) { Assert.Fail("Brute Force failed to hit the expected Unsolvable exception."); }
+            }
+
+
+            //And now make sure we fail fast and complain if they give us a board that's already invalid
+            UnSolvedBoard = new Board(BoardTest.UnsolvablePuzzle());
+            UnSolvedBoard.Cells[8] = new Cell(5);
+            HitExpectedException = false;
+
+            try
+            {
+                Solver.BruteForceSolve(ref UnSolvedBoard);
+            }
+            catch (Exception e)
+            {
+                if (e.Message.Equals(BruteForceSolver.InvalidBoardMessage)) { HitExpectedException = true; }
+                else { throw e; }
+            }
+            finally
+            {
+                if (!HitExpectedException) { Assert.Fail("Brute Force failed to hit the expected Invalid Board exception."); }
+            }
+
         }
     }
 }

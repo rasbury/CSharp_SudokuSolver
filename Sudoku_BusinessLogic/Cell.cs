@@ -5,7 +5,7 @@ namespace Sudoku_BusinessLogic
     public class Cell
     {
 
-        private int MyValue; //so you make infinite loops and crash unit testing if you have a property that sets itself, like Value below...
+        private int MyValue;
 
         public int Value
         {
@@ -17,7 +17,7 @@ namespace Sudoku_BusinessLogic
         public bool IsChangeable { get; }
 
         /// <summary>
-        /// Cell creator - Changeable can only be set here
+        /// Cell creator - Changeable can only be set manually here
         /// </summary>
         public Cell(int value, bool isChangeable)
         {
@@ -28,17 +28,22 @@ namespace Sudoku_BusinessLogic
 
 
         /// <summary>
-        /// Cell creator - defaults to changeable
+        /// Cell creator - defaults to changeable being true only if value == 0
         /// </summary>
         public Cell(int value)
         {
             MyValue = value;
-            IsChangeable = true;
+            IsChangeable = value == 0;
             TriedValues = new List<int>();
         }
 
 
         #region Methods for BruteForceSolver
+
+        /// <summary>
+        /// Helps BruteForceSolver not get into infinite loops
+        /// </summary>
+        public List<int> TriedValues { get; set; }
 
         /// <summary>
         /// Adds 1 to current value, rolls over to 0 if it would hit 10 or we have tried all values
@@ -77,10 +82,6 @@ namespace Sudoku_BusinessLogic
             TriedValues = new List<int>();
         }
 
-        /// <summary>
-        /// Helps BruteForceSolver not get into infinite loops
-        /// </summary>
-        public List<int> TriedValues { get; set; }
 
         #endregion
 

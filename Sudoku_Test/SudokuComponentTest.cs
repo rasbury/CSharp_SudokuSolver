@@ -389,6 +389,28 @@ namespace Sudoku_BusinessLogic.Tests
 
         }
 
+        public static List<Cell> EmptySudokuPuzzle()
+        {
+
+            List<Cell> Completelist = new List<Cell>();
+
+            Completelist.AddRange(new Group(new List<int> { 0, 0, 0, 0, 0, 0, 0, 0, 0 }).Cells);
+            Completelist.AddRange(new Group(new List<int> { 0, 0, 0, 0, 0, 0, 0, 0, 0 }).Cells);
+            Completelist.AddRange(new Group(new List<int> { 0, 0, 0, 0, 0, 0, 0, 0, 0 }).Cells);
+
+            Completelist.AddRange(new Group(new List<int> { 0, 0, 0, 0, 0, 0, 0, 0, 0 }).Cells);
+            Completelist.AddRange(new Group(new List<int> { 0, 0, 0, 0, 0, 0, 0, 0, 0 }).Cells);
+            Completelist.AddRange(new Group(new List<int> { 0, 0, 0, 0, 0, 0, 0, 0, 0 }).Cells);
+
+            Completelist.AddRange(new Group(new List<int> { 0, 0, 0, 0, 0, 0, 0, 0, 0 }).Cells);
+            Completelist.AddRange(new Group(new List<int> { 0, 0, 0, 0, 0, 0, 0, 0, 0 }).Cells);
+            Completelist.AddRange(new Group(new List<int> { 0, 0, 0, 0, 0, 0, 0, 0, 0 }).Cells);
+
+            return Completelist;
+
+
+        }
+
         #endregion
     }
 

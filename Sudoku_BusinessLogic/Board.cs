@@ -130,6 +130,18 @@ namespace Sudoku_BusinessLogic
 
         }
 
+        public Board DeepCopy()
+        {
+            //okay, so we have to make a new list of new cells based off the old one
+            List<Cell> NewCells = new List<Cell>();
+            foreach (Cell Oldcell in Cells)
+            {
+                NewCells.Add(new Cell(Oldcell.Value, Oldcell.IsChangeable));
+            }
+            Board NewBoard = new Board(NewCells);
+            return NewBoard;
+        }
+
         #endregion
 
         #region Validations

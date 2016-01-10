@@ -344,8 +344,7 @@ namespace Sudoku_BusinessLogic.Tests
             BruteForceSolver Solver = new BruteForceSolver();
             Solver.RecursiveBruteForceSolve(ref UnSolvedBoard, ref MultipleSolutionsFound);
 
-
-
+            
             Assert.IsTrue(UnSolvedBoard.IsValid() && UnSolvedBoard.IsComplete(),
                 TestType + "failed to solve the first test board, its result: " + UnSolvedBoard.PrintBoard());
             Assert.IsTrue(MultipleSolutionsFound,

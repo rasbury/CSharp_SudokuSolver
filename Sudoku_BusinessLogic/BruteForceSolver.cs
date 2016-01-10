@@ -10,20 +10,9 @@ namespace Sudoku_BusinessLogic
                                                                                     //it's just that logical strategies can't figure out all of them
 
 
-        /// <summary>
-        /// method shared between the two brute force approaches
-        /// </summary>
-        public int IndexOfNextBlankCell(Board board)
-        {
-            for (int i = 0; i < board.Cells.Count; i++)
-            {
-                if (board.Cells[i].Value == 0) { return i; }
-            }
-            return -1;
-        }
 
-        #region Recursive, multi-state solving
 
+        #region Public
         /// <summary>
         /// Will update board to be one valid solution, and set multipleSolutions to true if there are more solutions
         /// </summary>
@@ -51,104 +40,8 @@ namespace Sudoku_BusinessLogic
 
 
         /// <summary>
-        /// Recursive solve
-        /// </summary>
-        private List<Board> TrySolveBoard(Board board)
-        {
-
-            if (board.IsComplete())
-            {
-                List<Board> Solution = new List<Board>();
-                Solution.Add(board);
-                return Solution;
-            }
-
-            int Index = IndexOfNextBlankCell(board);
-            List<int> PossibleValues = PossibleCellValues(board, Index);
-
-            //learned about byval vs byRef in C#.  Any method calls are executed on the original object
-            //I had been assuming it would make a deep copy of the object every time the function is called, 
-            //                        (as VB does, iirc), since I don't pass it Byref, but that's not the case
-            //so here, we explicitly make a deep copy by re-creating all the cells in the list
-            Board newboard = board.DeepCopy();
-
-            switch (PossibleValues.Count)
-            {
-                case 0:
-
-                    return new List<Board>();
-                case 1:
-                    newboard.Cells[Index].Value = PossibleValues[0];
-                    return TrySolveBoard(newboard);
-                default:
-                    List<Board> Solutions = new List<Board>();
-                    foreach (int PossibleValue in PossibleValues)
-                    {
-                        //we desperately need to short-circuit if we have more than 1 solution already
-                        //an empty grid has 6,670,903,752,021,072,936,960 solutions according to Wikipedia
-                        //let's not calculate them all
-                        if (Solutions.Count > 1) { return Solutions; }
-
-                        //newboard = board.DeepCopy(); //if I do this every time, it adds 2 seconds to the test run
-                        newboard.Cells[Index].Value = PossibleValue;
-                        List<Board> NewSolution = TrySolveBoard(newboard);
-
-                        //this code is less pretty than just always starting with a deep copy, but 
-                        //if we have multiple possible values, this is 2 seconds faster (full test is 3 seconds rather than 5)
-                        if (NewSolution.Count == 0) { BlankOutLaterEditableValues(newboard, Index); }
-                        else { Solutions.AddRange(NewSolution); }
-
-                    }
-                    return Solutions;
-            }
-
-        }
-
-        private void BlankOutLaterEditableValues(Board board, int currentIndex)
-        {
-
-            for (int i = currentIndex + 1; i < board.Cells.Count; i++)
-            {
-                if (board.Cells[i].IsChangeable) { board.Cells[i].BlankOutCell(); }
-            }
-        }
-
-
-        public List<int> PossibleCellValues(Board board, int IndexOfCell)
-        {
-
-            if (IndexOfCell < 0) { return new List<int>(); }
-            //Try all the values until we get around to the cell's original value
-            //if we couldn't find another option in here, then we can't solve the cell
-            List<int> PossibleValues = new List<int>();
-
-            int OriginalValue = board.Cells[IndexOfCell].Value;
-            board.Cells[IndexOfCell].IncrementValueBy1();
-
-            while (board.Cells[IndexOfCell].Value != OriginalValue)
-            {
-                if (board.IsValid() && board.Cells[IndexOfCell].Value != 0)
-                {
-                    //record this as a possible value
-                    PossibleValues.Add(board.Cells[IndexOfCell].Value);
-                }
-                board.Cells[IndexOfCell].IncrementValueBy1();
-            }
-
-            //if this is nothing, we failed to solve it
-            return PossibleValues;
-
-        }
-
-
-        #endregion
-
-        #region Single-state solving
-
-        /// <summary>
         /// Will return at most one solution (first one it finds)
         /// </summary>
-        /// <param name="board"></param>
         public void SingleStateBruteForceSolve(ref Board board)
         {
             //fail fast if they send us a bad board to solve
@@ -177,8 +70,119 @@ namespace Sudoku_BusinessLogic
             }
 
         }
+        #endregion
 
-        public bool TrySolveCell(ref Board board, int indexOfCell, ref Stack<int> modifiedCells)
+
+        #region Private
+
+        /// <summary>
+        /// method shared between the two brute force approaches
+        /// </summary>
+        private int IndexOfNextBlankCell(Board board)
+        {
+            for (int i = 0; i < board.Cells.Count; i++)
+            {
+                if (board.Cells[i].Value == 0) { return i; }
+            }
+            return -1;
+        }
+
+        #region Recursive, multi-state solving
+
+        /// <summary>
+        /// Recursive solve
+        /// </summary>
+        private List<Board> TrySolveBoard(Board board)
+        {
+
+            if (board.IsComplete())
+            {
+                List<Board> Solution = new List<Board>();
+
+                //learned about byval vs byRef in C#.  Any method calls are executed on the original object
+                //I had been assuming it would make a deep copy of the object every time the function is called, 
+                //                        (as VB does, iirc), since I don't pass it Byref, but that's not the case
+                //so here, we explicitly make a deep copy by re-creating all the cells in the list
+                Solution.Add(board.DeepCopy());
+                return Solution;
+            }
+
+            int Index = IndexOfNextBlankCell(board);
+            List<int> PossibleValues = PossibleCellValues(board, Index);
+
+            switch (PossibleValues.Count)
+            {
+                case 0:
+                    return new List<Board>();
+                case 1:
+                    board.Cells[Index].Value = PossibleValues[0];
+                    return TrySolveBoard(board);
+                default:
+                    List<Board> Solutions = new List<Board>();
+                    foreach (int PossibleValue in PossibleValues)
+                    {
+                        //we desperately need to short-circuit if we have more than 1 solution already
+                        //an empty grid has 6,670,903,752,021,072,936,960 solutions according to Wikipedia
+                        //let's not calculate them all
+                        if (Solutions.Count > 1) { return Solutions; }
+
+                        board.Cells[Index].Value = PossibleValue;
+                        List<Board> NewSolution = TrySolveBoard(board);
+
+                        if (NewSolution.Count == 0) { BlankOutLaterEditableValues(board, Index); }
+                        else { Solutions.AddRange(NewSolution); }
+
+                    }
+                    return Solutions;
+            }
+
+        }
+
+        /// <summary>
+        /// Clears values on the board when we need to back up.  Needed because we don't do a deep copy for every recursion of TrySolveBoard
+        /// </summary>
+        private void BlankOutLaterEditableValues(Board board, int currentIndex)
+        {
+            for (int i = currentIndex + 1; i < board.Cells.Count; i++)
+            {
+                if (board.Cells[i].IsChangeable) { board.Cells[i].BlankOutCell(); }
+            }
+        }
+
+
+        private List<int> PossibleCellValues(Board board, int IndexOfCell)
+        {
+
+            if (IndexOfCell < 0) { return new List<int>(); }
+            //Try all the values until we get around to the cell's original value
+            //if we couldn't find another option in here, then we can't solve the cell
+            List<int> PossibleValues = new List<int>();
+
+            int OriginalValue = board.Cells[IndexOfCell].Value;
+            board.Cells[IndexOfCell].IncrementValueBy1();
+
+            while (board.Cells[IndexOfCell].Value != OriginalValue)
+            {
+                if (board.IsValid() && board.Cells[IndexOfCell].Value != 0)
+                {
+                    //record this as a possible value
+                    PossibleValues.Add(board.Cells[IndexOfCell].Value);
+                }
+                board.Cells[IndexOfCell].IncrementValueBy1();
+            }
+
+            //if this is empty, we failed to solve it
+            return PossibleValues;
+
+        }
+
+
+        #endregion
+
+        #region Single-state solving
+
+
+        private bool TrySolveCell(ref Board board, int indexOfCell, ref Stack<int> modifiedCells)
         {
             //Try all the values until we get around to the cell's original value
             //if we couldn't find another option in here, then we can't solve the cell
@@ -207,9 +211,7 @@ namespace Sudoku_BusinessLogic
         /// We found a cell where no value is correct, so one of our previous guesses was wrong.  
         /// Back up through the stack of what we've done, trying alternative values
         /// </summary>
-        /// <param name="board"></param>
-        /// <returns></returns>
-        public bool RevisePreviousGuess(ref Board board, ref Stack<int> modifiedCells)
+        private bool RevisePreviousGuess(ref Board board, ref Stack<int> modifiedCells)
         {
             bool ValueChanged = false;
             while (!ValueChanged && modifiedCells.Count > 0)
@@ -226,5 +228,6 @@ namespace Sudoku_BusinessLogic
 
         #endregion
 
+        #endregion
     }
 }
